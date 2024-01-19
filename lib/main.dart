@@ -10,7 +10,7 @@ void main() async {
     theme: ThemeData(
         hintColor: Colors.amber,
         primaryColor: Colors.white,
-        inputDecorationTheme: InputDecorationTheme(
+        inputDecorationTheme: const InputDecorationTheme(
             enabledBorder:
                 OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
             focusedBorder:
@@ -45,8 +45,25 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final realController = TextEditingController();
+    final dolarController = TextEditingController();
+    final euroController = TextEditingController();
+
     double dolar;
     double euro;
+
+    void _realChanged(String text) {
+      print(text);
+    }
+
+    void _dolarChanged(String text) {
+      print(text);
+    }
+
+    void _euroChanged(String text) {
+      print(text);
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -80,43 +97,31 @@ class _HomeState extends State<Home> {
                   dolar = snapshot.data!["results"]["currencies"]["USD"]["buy"];
                   euro = snapshot.data!["results"]["currencies"]["EUR"]["buy"];
                   return SingleChildScrollView(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment
                             .stretch, //alinhar no centro, isso alarga tudo da coluna
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.monetization_on,
                             size: 150,
                             color: Colors.amber,
                           ),
-                          SizedBox(height: 15,),
-                          TextField(
-                            decoration: InputDecoration(
-                                labelText: 'Reais',
-                                labelStyle: TextStyle(color: Colors.amber),
-                                border: OutlineInputBorder(),
-                                prefixText: 'R\$'),
-                            style: TextStyle(color: Colors.amber),
+                          const SizedBox(
+                            height: 15,
                           ),
-                          SizedBox(height: 15,),
-                          TextField(
-                            decoration: InputDecoration(
-                                labelText: 'Dolar',
-                                labelStyle: TextStyle(color: Colors.amber),
-                                border: OutlineInputBorder(),
-                                prefixText: 'US\$'),
-                            style: TextStyle(color: Colors.amber),
+                          buildTextField(
+                              'Real', 'R\$', realController, _realChanged),
+                          const SizedBox(
+                            height: 15,
                           ),
-                          SizedBox(height: 15,),
-                          TextField(
-                            decoration: InputDecoration(
-                                labelText: 'Euro',
-                                labelStyle: TextStyle(color: Colors.amber),
-                                border: OutlineInputBorder(),
-                                prefixText: '€\$'),
-                            style: TextStyle(color: Colors.amber),
+                          buildTextField(
+                              'Dólar', 'US\$', dolarController, _dolarChanged),
+                          const SizedBox(
+                            height: 15,
                           ),
+                          buildTextField(
+                              'Euro', '€\$', euroController, _euroChanged),
                         ]),
                   );
                 }
@@ -124,4 +129,19 @@ class _HomeState extends State<Home> {
           }),
     );
   }
+}
+
+Widget buildTextField(String label, String prefix,
+    TextEditingController controller, Function(String value) chnageValue) {
+  return TextField(
+    controller: controller,
+    decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.amber),
+        border: const OutlineInputBorder(),
+        prefixText: prefix),
+    style: const TextStyle(color: Colors.amber),
+    onChanged: chnageValue,
+    keyboardType: TextInputType.number,
+  );
 }
